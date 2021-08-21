@@ -1,4 +1,4 @@
-module github.com/radekg/yugabyte-db-go-proto
+module github.com/radekg/yugabyte-db-go-proto/v2
 
 go 1.16
 

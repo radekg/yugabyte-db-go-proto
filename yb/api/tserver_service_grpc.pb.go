@@ -20,7 +20,6 @@ const _ = grpc.SupportPackageIsVersion7
 type TabletServerServiceClient interface {
 	Write(ctx context.Context, in *WriteRequestPB, opts ...grpc.CallOption) (*WriteResponsePB, error)
 	Read(ctx context.Context, in *ReadRequestPB, opts ...grpc.CallOption) (*ReadResponsePB, error)
-	VerifyTableRowRange(ctx context.Context, in *VerifyTableRowRangeRequestPB, opts ...grpc.CallOption) (*VerifyTableRowRangeResponsePB, error)
 	NoOp(ctx context.Context, in *NoOpRequestPB, opts ...grpc.CallOption) (*NoOpResponsePB, error)
 	ListTablets(ctx context.Context, in *ListTabletsRequestPB, opts ...grpc.CallOption) (*ListTabletsResponsePB, error)
 	GetLogLocation(ctx context.Context, in *GetLogLocationRequestPB, opts ...grpc.CallOption) (*GetLogLocationResponsePB, error)
@@ -67,15 +66,6 @@ func (c *tabletServerServiceClient) Write(ctx context.Context, in *WriteRequestP
 func (c *tabletServerServiceClient) Read(ctx context.Context, in *ReadRequestPB, opts ...grpc.CallOption) (*ReadResponsePB, error) {
 	out := new(ReadResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerService/Read", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *tabletServerServiceClient) VerifyTableRowRange(ctx context.Context, in *VerifyTableRowRangeRequestPB, opts ...grpc.CallOption) (*VerifyTableRowRangeResponsePB, error) {
-	out := new(VerifyTableRowRangeResponsePB)
-	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerService/VerifyTableRowRange", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +222,6 @@ func (c *tabletServerServiceClient) TakeTransaction(ctx context.Context, in *Tak
 type TabletServerServiceServer interface {
 	Write(context.Context, *WriteRequestPB) (*WriteResponsePB, error)
 	Read(context.Context, *ReadRequestPB) (*ReadResponsePB, error)
-	VerifyTableRowRange(context.Context, *VerifyTableRowRangeRequestPB) (*VerifyTableRowRangeResponsePB, error)
 	NoOp(context.Context, *NoOpRequestPB) (*NoOpResponsePB, error)
 	ListTablets(context.Context, *ListTabletsRequestPB) (*ListTabletsResponsePB, error)
 	GetLogLocation(context.Context, *GetLogLocationRequestPB) (*GetLogLocationResponsePB, error)
@@ -268,9 +257,6 @@ func (UnimplementedTabletServerServiceServer) Write(context.Context, *WriteReque
 }
 func (UnimplementedTabletServerServiceServer) Read(context.Context, *ReadRequestPB) (*ReadResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
-}
-func (UnimplementedTabletServerServiceServer) VerifyTableRowRange(context.Context, *VerifyTableRowRangeRequestPB) (*VerifyTableRowRangeResponsePB, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyTableRowRange not implemented")
 }
 func (UnimplementedTabletServerServiceServer) NoOp(context.Context, *NoOpRequestPB) (*NoOpResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NoOp not implemented")
@@ -364,24 +350,6 @@ func _TabletServerService_Read_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TabletServerServiceServer).Read(ctx, req.(*ReadRequestPB))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _TabletServerService_VerifyTableRowRange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyTableRowRangeRequestPB)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TabletServerServiceServer).VerifyTableRowRange(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/yb.tserver.TabletServerService/VerifyTableRowRange",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TabletServerServiceServer).VerifyTableRowRange(ctx, req.(*VerifyTableRowRangeRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -688,10 +656,6 @@ var TabletServerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Read",
 			Handler:    _TabletServerService_Read_Handler,
-		},
-		{
-			MethodName: "VerifyTableRowRange",
-			Handler:    _TabletServerService_VerifyTableRowRange_Handler,
 		},
 		{
 			MethodName: "NoOp",

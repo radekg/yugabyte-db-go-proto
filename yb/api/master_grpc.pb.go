@@ -24,6 +24,7 @@ type MasterServiceClient interface {
 	GetTabletLocations(ctx context.Context, in *GetTabletLocationsRequestPB, opts ...grpc.CallOption) (*GetTabletLocationsResponsePB, error)
 	CreateTable(ctx context.Context, in *CreateTableRequestPB, opts ...grpc.CallOption) (*CreateTableResponsePB, error)
 	IsCreateTableDone(ctx context.Context, in *IsCreateTableDoneRequestPB, opts ...grpc.CallOption) (*IsCreateTableDoneResponsePB, error)
+	AnalyzeTable(ctx context.Context, in *AnalyzeTableRequestPB, opts ...grpc.CallOption) (*AnalyzeTableResponsePB, error)
 	TruncateTable(ctx context.Context, in *TruncateTableRequestPB, opts ...grpc.CallOption) (*TruncateTableResponsePB, error)
 	IsTruncateTableDone(ctx context.Context, in *IsTruncateTableDoneRequestPB, opts ...grpc.CallOption) (*IsTruncateTableDoneResponsePB, error)
 	BackfillIndex(ctx context.Context, in *MasterBackfillIndexRequestPB, opts ...grpc.CallOption) (*MasterBackfillIndexResponsePB, error)
@@ -149,6 +150,15 @@ func (c *masterServiceClient) CreateTable(ctx context.Context, in *CreateTableRe
 func (c *masterServiceClient) IsCreateTableDone(ctx context.Context, in *IsCreateTableDoneRequestPB, opts ...grpc.CallOption) (*IsCreateTableDoneResponsePB, error) {
 	out := new(IsCreateTableDoneResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.master.MasterService/IsCreateTableDone", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masterServiceClient) AnalyzeTable(ctx context.Context, in *AnalyzeTableRequestPB, opts ...grpc.CallOption) (*AnalyzeTableResponsePB, error) {
+	out := new(AnalyzeTableResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterService/AnalyzeTable", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -849,6 +859,7 @@ type MasterServiceServer interface {
 	GetTabletLocations(context.Context, *GetTabletLocationsRequestPB) (*GetTabletLocationsResponsePB, error)
 	CreateTable(context.Context, *CreateTableRequestPB) (*CreateTableResponsePB, error)
 	IsCreateTableDone(context.Context, *IsCreateTableDoneRequestPB) (*IsCreateTableDoneResponsePB, error)
+	AnalyzeTable(context.Context, *AnalyzeTableRequestPB) (*AnalyzeTableResponsePB, error)
 	TruncateTable(context.Context, *TruncateTableRequestPB) (*TruncateTableResponsePB, error)
 	IsTruncateTableDone(context.Context, *IsTruncateTableDoneRequestPB) (*IsTruncateTableDoneResponsePB, error)
 	BackfillIndex(context.Context, *MasterBackfillIndexRequestPB) (*MasterBackfillIndexResponsePB, error)
@@ -951,6 +962,9 @@ func (UnimplementedMasterServiceServer) CreateTable(context.Context, *CreateTabl
 }
 func (UnimplementedMasterServiceServer) IsCreateTableDone(context.Context, *IsCreateTableDoneRequestPB) (*IsCreateTableDoneResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsCreateTableDone not implemented")
+}
+func (UnimplementedMasterServiceServer) AnalyzeTable(context.Context, *AnalyzeTableRequestPB) (*AnalyzeTableResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AnalyzeTable not implemented")
 }
 func (UnimplementedMasterServiceServer) TruncateTable(context.Context, *TruncateTableRequestPB) (*TruncateTableResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TruncateTable not implemented")
@@ -1260,6 +1274,24 @@ func _MasterService_IsCreateTableDone_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MasterServiceServer).IsCreateTableDone(ctx, req.(*IsCreateTableDoneRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MasterService_AnalyzeTable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AnalyzeTableRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServiceServer).AnalyzeTable(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.master.MasterService/AnalyzeTable",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServiceServer).AnalyzeTable(ctx, req.(*AnalyzeTableRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2654,6 +2686,10 @@ var MasterService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsCreateTableDone",
 			Handler:    _MasterService_IsCreateTableDone_Handler,
+		},
+		{
+			MethodName: "AnalyzeTable",
+			Handler:    _MasterService_AnalyzeTable_Handler,
 		},
 		{
 			MethodName: "TruncateTable",
