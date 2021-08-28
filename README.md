@@ -34,3 +34,5 @@ import (
     ybApi "github.com/radekg/yugabyte-db-go-proto/v2/yb/api"
 )
 ```
+
+For a real world example, have a look at the reference [YugabyteDB CLI client](https://github.com/radekg/yugabyte-db-go-client/tree/master/client/cli).
