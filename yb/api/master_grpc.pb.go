@@ -24,7 +24,6 @@ type MasterServiceClient interface {
 	GetTabletLocations(ctx context.Context, in *GetTabletLocationsRequestPB, opts ...grpc.CallOption) (*GetTabletLocationsResponsePB, error)
 	CreateTable(ctx context.Context, in *CreateTableRequestPB, opts ...grpc.CallOption) (*CreateTableResponsePB, error)
 	IsCreateTableDone(ctx context.Context, in *IsCreateTableDoneRequestPB, opts ...grpc.CallOption) (*IsCreateTableDoneResponsePB, error)
-	AnalyzeTable(ctx context.Context, in *AnalyzeTableRequestPB, opts ...grpc.CallOption) (*AnalyzeTableResponsePB, error)
 	TruncateTable(ctx context.Context, in *TruncateTableRequestPB, opts ...grpc.CallOption) (*TruncateTableResponsePB, error)
 	IsTruncateTableDone(ctx context.Context, in *IsTruncateTableDoneRequestPB, opts ...grpc.CallOption) (*IsTruncateTableDoneResponsePB, error)
 	BackfillIndex(ctx context.Context, in *MasterBackfillIndexRequestPB, opts ...grpc.CallOption) (*MasterBackfillIndexResponsePB, error)
@@ -68,6 +67,7 @@ type MasterServiceClient interface {
 	DeleteCDCStream(ctx context.Context, in *MasterDeleteCDCStreamRequestPB, opts ...grpc.CallOption) (*MasterDeleteCDCStreamResponsePB, error)
 	ListCDCStreams(ctx context.Context, in *ListCDCStreamsRequestPB, opts ...grpc.CallOption) (*ListCDCStreamsResponsePB, error)
 	GetCDCStream(ctx context.Context, in *GetCDCStreamRequestPB, opts ...grpc.CallOption) (*GetCDCStreamResponsePB, error)
+	UpdateCDCStream(ctx context.Context, in *UpdateCDCStreamRequestPB, opts ...grpc.CallOption) (*UpdateCDCStreamResponsePB, error)
 	// Redis Config
 	RedisConfigSet(ctx context.Context, in *RedisConfigSetRequestPB, opts ...grpc.CallOption) (*RedisConfigSetResponsePB, error)
 	RedisConfigGet(ctx context.Context, in *RedisConfigGetRequestPB, opts ...grpc.CallOption) (*RedisConfigGetResponsePB, error)
@@ -108,7 +108,7 @@ type MasterServiceClient interface {
 	GetUniverseKeyRegistry(ctx context.Context, in *GetUniverseKeyRegistryRequestPB, opts ...grpc.CallOption) (*GetUniverseKeyRegistryResponsePB, error)
 	HasUniverseKeyInMemory(ctx context.Context, in *HasUniverseKeyInMemoryRequestPB, opts ...grpc.CallOption) (*HasUniverseKeyInMemoryResponsePB, error)
 	SplitTablet(ctx context.Context, in *MasterSplitTabletRequestPB, opts ...grpc.CallOption) (*MasterSplitTabletResponsePB, error)
-	DeleteTablet(ctx context.Context, in *MasterDeleteTabletRequestPB, opts ...grpc.CallOption) (*MasterDeleteTabletResponsePB, error)
+	DeleteNotServingTablet(ctx context.Context, in *DeleteNotServingTabletRequestPB, opts ...grpc.CallOption) (*DeleteNotServingTabletResponsePB, error)
 	DdlLog(ctx context.Context, in *DdlLogRequestPB, opts ...grpc.CallOption) (*DdlLogResponsePB, error)
 }
 
@@ -150,15 +150,6 @@ func (c *masterServiceClient) CreateTable(ctx context.Context, in *CreateTableRe
 func (c *masterServiceClient) IsCreateTableDone(ctx context.Context, in *IsCreateTableDoneRequestPB, opts ...grpc.CallOption) (*IsCreateTableDoneResponsePB, error) {
 	out := new(IsCreateTableDoneResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.master.MasterService/IsCreateTableDone", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *masterServiceClient) AnalyzeTable(ctx context.Context, in *AnalyzeTableRequestPB, opts ...grpc.CallOption) (*AnalyzeTableResponsePB, error) {
-	out := new(AnalyzeTableResponsePB)
-	err := c.cc.Invoke(ctx, "/yb.master.MasterService/AnalyzeTable", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -516,6 +507,15 @@ func (c *masterServiceClient) GetCDCStream(ctx context.Context, in *GetCDCStream
 	return out, nil
 }
 
+func (c *masterServiceClient) UpdateCDCStream(ctx context.Context, in *UpdateCDCStreamRequestPB, opts ...grpc.CallOption) (*UpdateCDCStreamResponsePB, error) {
+	out := new(UpdateCDCStreamResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterService/UpdateCDCStream", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *masterServiceClient) RedisConfigSet(ctx context.Context, in *RedisConfigSetRequestPB, opts ...grpc.CallOption) (*RedisConfigSetResponsePB, error) {
 	out := new(RedisConfigSetResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.master.MasterService/RedisConfigSet", in, out, opts...)
@@ -831,9 +831,9 @@ func (c *masterServiceClient) SplitTablet(ctx context.Context, in *MasterSplitTa
 	return out, nil
 }
 
-func (c *masterServiceClient) DeleteTablet(ctx context.Context, in *MasterDeleteTabletRequestPB, opts ...grpc.CallOption) (*MasterDeleteTabletResponsePB, error) {
-	out := new(MasterDeleteTabletResponsePB)
-	err := c.cc.Invoke(ctx, "/yb.master.MasterService/DeleteTablet", in, out, opts...)
+func (c *masterServiceClient) DeleteNotServingTablet(ctx context.Context, in *DeleteNotServingTabletRequestPB, opts ...grpc.CallOption) (*DeleteNotServingTabletResponsePB, error) {
+	out := new(DeleteNotServingTabletResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterService/DeleteNotServingTablet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -859,7 +859,6 @@ type MasterServiceServer interface {
 	GetTabletLocations(context.Context, *GetTabletLocationsRequestPB) (*GetTabletLocationsResponsePB, error)
 	CreateTable(context.Context, *CreateTableRequestPB) (*CreateTableResponsePB, error)
 	IsCreateTableDone(context.Context, *IsCreateTableDoneRequestPB) (*IsCreateTableDoneResponsePB, error)
-	AnalyzeTable(context.Context, *AnalyzeTableRequestPB) (*AnalyzeTableResponsePB, error)
 	TruncateTable(context.Context, *TruncateTableRequestPB) (*TruncateTableResponsePB, error)
 	IsTruncateTableDone(context.Context, *IsTruncateTableDoneRequestPB) (*IsTruncateTableDoneResponsePB, error)
 	BackfillIndex(context.Context, *MasterBackfillIndexRequestPB) (*MasterBackfillIndexResponsePB, error)
@@ -903,6 +902,7 @@ type MasterServiceServer interface {
 	DeleteCDCStream(context.Context, *MasterDeleteCDCStreamRequestPB) (*MasterDeleteCDCStreamResponsePB, error)
 	ListCDCStreams(context.Context, *ListCDCStreamsRequestPB) (*ListCDCStreamsResponsePB, error)
 	GetCDCStream(context.Context, *GetCDCStreamRequestPB) (*GetCDCStreamResponsePB, error)
+	UpdateCDCStream(context.Context, *UpdateCDCStreamRequestPB) (*UpdateCDCStreamResponsePB, error)
 	// Redis Config
 	RedisConfigSet(context.Context, *RedisConfigSetRequestPB) (*RedisConfigSetResponsePB, error)
 	RedisConfigGet(context.Context, *RedisConfigGetRequestPB) (*RedisConfigGetResponsePB, error)
@@ -943,7 +943,7 @@ type MasterServiceServer interface {
 	GetUniverseKeyRegistry(context.Context, *GetUniverseKeyRegistryRequestPB) (*GetUniverseKeyRegistryResponsePB, error)
 	HasUniverseKeyInMemory(context.Context, *HasUniverseKeyInMemoryRequestPB) (*HasUniverseKeyInMemoryResponsePB, error)
 	SplitTablet(context.Context, *MasterSplitTabletRequestPB) (*MasterSplitTabletResponsePB, error)
-	DeleteTablet(context.Context, *MasterDeleteTabletRequestPB) (*MasterDeleteTabletResponsePB, error)
+	DeleteNotServingTablet(context.Context, *DeleteNotServingTabletRequestPB) (*DeleteNotServingTabletResponsePB, error)
 	DdlLog(context.Context, *DdlLogRequestPB) (*DdlLogResponsePB, error)
 }
 
@@ -962,9 +962,6 @@ func (UnimplementedMasterServiceServer) CreateTable(context.Context, *CreateTabl
 }
 func (UnimplementedMasterServiceServer) IsCreateTableDone(context.Context, *IsCreateTableDoneRequestPB) (*IsCreateTableDoneResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsCreateTableDone not implemented")
-}
-func (UnimplementedMasterServiceServer) AnalyzeTable(context.Context, *AnalyzeTableRequestPB) (*AnalyzeTableResponsePB, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AnalyzeTable not implemented")
 }
 func (UnimplementedMasterServiceServer) TruncateTable(context.Context, *TruncateTableRequestPB) (*TruncateTableResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TruncateTable not implemented")
@@ -1083,6 +1080,9 @@ func (UnimplementedMasterServiceServer) ListCDCStreams(context.Context, *ListCDC
 func (UnimplementedMasterServiceServer) GetCDCStream(context.Context, *GetCDCStreamRequestPB) (*GetCDCStreamResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCDCStream not implemented")
 }
+func (UnimplementedMasterServiceServer) UpdateCDCStream(context.Context, *UpdateCDCStreamRequestPB) (*UpdateCDCStreamResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCDCStream not implemented")
+}
 func (UnimplementedMasterServiceServer) RedisConfigSet(context.Context, *RedisConfigSetRequestPB) (*RedisConfigSetResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RedisConfigSet not implemented")
 }
@@ -1188,8 +1188,8 @@ func (UnimplementedMasterServiceServer) HasUniverseKeyInMemory(context.Context, 
 func (UnimplementedMasterServiceServer) SplitTablet(context.Context, *MasterSplitTabletRequestPB) (*MasterSplitTabletResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SplitTablet not implemented")
 }
-func (UnimplementedMasterServiceServer) DeleteTablet(context.Context, *MasterDeleteTabletRequestPB) (*MasterDeleteTabletResponsePB, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteTablet not implemented")
+func (UnimplementedMasterServiceServer) DeleteNotServingTablet(context.Context, *DeleteNotServingTabletRequestPB) (*DeleteNotServingTabletResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteNotServingTablet not implemented")
 }
 func (UnimplementedMasterServiceServer) DdlLog(context.Context, *DdlLogRequestPB) (*DdlLogResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DdlLog not implemented")
@@ -1274,24 +1274,6 @@ func _MasterService_IsCreateTableDone_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MasterServiceServer).IsCreateTableDone(ctx, req.(*IsCreateTableDoneRequestPB))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MasterService_AnalyzeTable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AnalyzeTableRequestPB)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MasterServiceServer).AnalyzeTable(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/yb.master.MasterService/AnalyzeTable",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MasterServiceServer).AnalyzeTable(ctx, req.(*AnalyzeTableRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1998,6 +1980,24 @@ func _MasterService_GetCDCStream_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MasterService_UpdateCDCStream_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCDCStreamRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServiceServer).UpdateCDCStream(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.master.MasterService/UpdateCDCStream",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServiceServer).UpdateCDCStream(ctx, req.(*UpdateCDCStreamRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MasterService_RedisConfigSet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RedisConfigSetRequestPB)
 	if err := dec(in); err != nil {
@@ -2628,20 +2628,20 @@ func _MasterService_SplitTablet_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MasterService_DeleteTablet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MasterDeleteTabletRequestPB)
+func _MasterService_DeleteNotServingTablet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteNotServingTabletRequestPB)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MasterServiceServer).DeleteTablet(ctx, in)
+		return srv.(MasterServiceServer).DeleteNotServingTablet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/yb.master.MasterService/DeleteTablet",
+		FullMethod: "/yb.master.MasterService/DeleteNotServingTablet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MasterServiceServer).DeleteTablet(ctx, req.(*MasterDeleteTabletRequestPB))
+		return srv.(MasterServiceServer).DeleteNotServingTablet(ctx, req.(*DeleteNotServingTabletRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2686,10 +2686,6 @@ var MasterService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsCreateTableDone",
 			Handler:    _MasterService_IsCreateTableDone_Handler,
-		},
-		{
-			MethodName: "AnalyzeTable",
-			Handler:    _MasterService_AnalyzeTable_Handler,
 		},
 		{
 			MethodName: "TruncateTable",
@@ -2848,6 +2844,10 @@ var MasterService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MasterService_GetCDCStream_Handler,
 		},
 		{
+			MethodName: "UpdateCDCStream",
+			Handler:    _MasterService_UpdateCDCStream_Handler,
+		},
+		{
 			MethodName: "RedisConfigSet",
 			Handler:    _MasterService_RedisConfigSet_Handler,
 		},
@@ -2988,8 +2988,8 @@ var MasterService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MasterService_SplitTablet_Handler,
 		},
 		{
-			MethodName: "DeleteTablet",
-			Handler:    _MasterService_DeleteTablet_Handler,
+			MethodName: "DeleteNotServingTablet",
+			Handler:    _MasterService_DeleteNotServingTablet_Handler,
 		},
 		{
 			MethodName: "DdlLog",

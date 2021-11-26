@@ -38,7 +38,6 @@ type TabletServerAdminServiceClient interface {
 	CountIntents(ctx context.Context, in *CountIntentsRequestPB, opts ...grpc.CallOption) (*CountIntentsResponsePB, error)
 	AddTableToTablet(ctx context.Context, in *AddTableToTabletRequestPB, opts ...grpc.CallOption) (*AddTableToTabletResponsePB, error)
 	RemoveTableFromTablet(ctx context.Context, in *RemoveTableFromTabletRequestPB, opts ...grpc.CallOption) (*RemoveTableFromTabletResponsePB, error)
-	GetSplitKey(ctx context.Context, in *GetSplitKeyRequestPB, opts ...grpc.CallOption) (*GetSplitKeyResponsePB, error)
 	SplitTablet(ctx context.Context, in *SplitTabletRequestPB, opts ...grpc.CallOption) (*SplitTabletResponsePB, error)
 }
 
@@ -149,15 +148,6 @@ func (c *tabletServerAdminServiceClient) RemoveTableFromTablet(ctx context.Conte
 	return out, nil
 }
 
-func (c *tabletServerAdminServiceClient) GetSplitKey(ctx context.Context, in *GetSplitKeyRequestPB, opts ...grpc.CallOption) (*GetSplitKeyResponsePB, error) {
-	out := new(GetSplitKeyResponsePB)
-	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerAdminService/GetSplitKey", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *tabletServerAdminServiceClient) SplitTablet(ctx context.Context, in *SplitTabletRequestPB, opts ...grpc.CallOption) (*SplitTabletResponsePB, error) {
 	out := new(SplitTabletResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerAdminService/SplitTablet", in, out, opts...)
@@ -191,7 +181,6 @@ type TabletServerAdminServiceServer interface {
 	CountIntents(context.Context, *CountIntentsRequestPB) (*CountIntentsResponsePB, error)
 	AddTableToTablet(context.Context, *AddTableToTabletRequestPB) (*AddTableToTabletResponsePB, error)
 	RemoveTableFromTablet(context.Context, *RemoveTableFromTabletRequestPB) (*RemoveTableFromTabletResponsePB, error)
-	GetSplitKey(context.Context, *GetSplitKeyRequestPB) (*GetSplitKeyResponsePB, error)
 	SplitTablet(context.Context, *SplitTabletRequestPB) (*SplitTabletResponsePB, error)
 }
 
@@ -231,9 +220,6 @@ func (UnimplementedTabletServerAdminServiceServer) AddTableToTablet(context.Cont
 }
 func (UnimplementedTabletServerAdminServiceServer) RemoveTableFromTablet(context.Context, *RemoveTableFromTabletRequestPB) (*RemoveTableFromTabletResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveTableFromTablet not implemented")
-}
-func (UnimplementedTabletServerAdminServiceServer) GetSplitKey(context.Context, *GetSplitKeyRequestPB) (*GetSplitKeyResponsePB, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSplitKey not implemented")
 }
 func (UnimplementedTabletServerAdminServiceServer) SplitTablet(context.Context, *SplitTabletRequestPB) (*SplitTabletResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SplitTablet not implemented")
@@ -448,24 +434,6 @@ func _TabletServerAdminService_RemoveTableFromTablet_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TabletServerAdminService_GetSplitKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSplitKeyRequestPB)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TabletServerAdminServiceServer).GetSplitKey(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/yb.tserver.TabletServerAdminService/GetSplitKey",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TabletServerAdminServiceServer).GetSplitKey(ctx, req.(*GetSplitKeyRequestPB))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _TabletServerAdminService_SplitTablet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SplitTabletRequestPB)
 	if err := dec(in); err != nil {
@@ -534,10 +502,6 @@ var TabletServerAdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveTableFromTablet",
 			Handler:    _TabletServerAdminService_RemoveTableFromTablet_Handler,
-		},
-		{
-			MethodName: "GetSplitKey",
-			Handler:    _TabletServerAdminService_GetSplitKey_Handler,
 		},
 		{
 			MethodName: "SplitTablet",

@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type TabletServerServiceClient interface {
 	Write(ctx context.Context, in *WriteRequestPB, opts ...grpc.CallOption) (*WriteResponsePB, error)
 	Read(ctx context.Context, in *ReadRequestPB, opts ...grpc.CallOption) (*ReadResponsePB, error)
+	VerifyTableRowRange(ctx context.Context, in *VerifyTableRowRangeRequestPB, opts ...grpc.CallOption) (*VerifyTableRowRangeResponsePB, error)
 	NoOp(ctx context.Context, in *NoOpRequestPB, opts ...grpc.CallOption) (*NoOpResponsePB, error)
 	ListTablets(ctx context.Context, in *ListTabletsRequestPB, opts ...grpc.CallOption) (*ListTabletsResponsePB, error)
 	GetLogLocation(ctx context.Context, in *GetLogLocationRequestPB, opts ...grpc.CallOption) (*GetLogLocationResponsePB, error)
@@ -44,6 +45,8 @@ type TabletServerServiceClient interface {
 	IsTabletServerReady(ctx context.Context, in *IsTabletServerReadyRequestPB, opts ...grpc.CallOption) (*IsTabletServerReadyResponsePB, error)
 	// Takes precreated transaction from this tserver.
 	TakeTransaction(ctx context.Context, in *TakeTransactionRequestPB, opts ...grpc.CallOption) (*TakeTransactionResponsePB, error)
+	GetSplitKey(ctx context.Context, in *GetSplitKeyRequestPB, opts ...grpc.CallOption) (*GetSplitKeyResponsePB, error)
+	GetSharedData(ctx context.Context, in *GetSharedDataRequestPB, opts ...grpc.CallOption) (*GetSharedDataResponsePB, error)
 }
 
 type tabletServerServiceClient struct {
@@ -66,6 +69,15 @@ func (c *tabletServerServiceClient) Write(ctx context.Context, in *WriteRequestP
 func (c *tabletServerServiceClient) Read(ctx context.Context, in *ReadRequestPB, opts ...grpc.CallOption) (*ReadResponsePB, error) {
 	out := new(ReadResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerService/Read", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tabletServerServiceClient) VerifyTableRowRange(ctx context.Context, in *VerifyTableRowRangeRequestPB, opts ...grpc.CallOption) (*VerifyTableRowRangeResponsePB, error) {
+	out := new(VerifyTableRowRangeResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerService/VerifyTableRowRange", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -216,12 +228,31 @@ func (c *tabletServerServiceClient) TakeTransaction(ctx context.Context, in *Tak
 	return out, nil
 }
 
+func (c *tabletServerServiceClient) GetSplitKey(ctx context.Context, in *GetSplitKeyRequestPB, opts ...grpc.CallOption) (*GetSplitKeyResponsePB, error) {
+	out := new(GetSplitKeyResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerService/GetSplitKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tabletServerServiceClient) GetSharedData(ctx context.Context, in *GetSharedDataRequestPB, opts ...grpc.CallOption) (*GetSharedDataResponsePB, error) {
+	out := new(GetSharedDataResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerService/GetSharedData", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TabletServerServiceServer is the server API for TabletServerService service.
 // All implementations should embed UnimplementedTabletServerServiceServer
 // for forward compatibility
 type TabletServerServiceServer interface {
 	Write(context.Context, *WriteRequestPB) (*WriteResponsePB, error)
 	Read(context.Context, *ReadRequestPB) (*ReadResponsePB, error)
+	VerifyTableRowRange(context.Context, *VerifyTableRowRangeRequestPB) (*VerifyTableRowRangeResponsePB, error)
 	NoOp(context.Context, *NoOpRequestPB) (*NoOpResponsePB, error)
 	ListTablets(context.Context, *ListTabletsRequestPB) (*ListTabletsResponsePB, error)
 	GetLogLocation(context.Context, *GetLogLocationRequestPB) (*GetLogLocationResponsePB, error)
@@ -246,6 +277,8 @@ type TabletServerServiceServer interface {
 	IsTabletServerReady(context.Context, *IsTabletServerReadyRequestPB) (*IsTabletServerReadyResponsePB, error)
 	// Takes precreated transaction from this tserver.
 	TakeTransaction(context.Context, *TakeTransactionRequestPB) (*TakeTransactionResponsePB, error)
+	GetSplitKey(context.Context, *GetSplitKeyRequestPB) (*GetSplitKeyResponsePB, error)
+	GetSharedData(context.Context, *GetSharedDataRequestPB) (*GetSharedDataResponsePB, error)
 }
 
 // UnimplementedTabletServerServiceServer should be embedded to have forward compatible implementations.
@@ -257,6 +290,9 @@ func (UnimplementedTabletServerServiceServer) Write(context.Context, *WriteReque
 }
 func (UnimplementedTabletServerServiceServer) Read(context.Context, *ReadRequestPB) (*ReadResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
+}
+func (UnimplementedTabletServerServiceServer) VerifyTableRowRange(context.Context, *VerifyTableRowRangeRequestPB) (*VerifyTableRowRangeResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyTableRowRange not implemented")
 }
 func (UnimplementedTabletServerServiceServer) NoOp(context.Context, *NoOpRequestPB) (*NoOpResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NoOp not implemented")
@@ -306,6 +342,12 @@ func (UnimplementedTabletServerServiceServer) IsTabletServerReady(context.Contex
 func (UnimplementedTabletServerServiceServer) TakeTransaction(context.Context, *TakeTransactionRequestPB) (*TakeTransactionResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TakeTransaction not implemented")
 }
+func (UnimplementedTabletServerServiceServer) GetSplitKey(context.Context, *GetSplitKeyRequestPB) (*GetSplitKeyResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSplitKey not implemented")
+}
+func (UnimplementedTabletServerServiceServer) GetSharedData(context.Context, *GetSharedDataRequestPB) (*GetSharedDataResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSharedData not implemented")
+}
 
 // UnsafeTabletServerServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to TabletServerServiceServer will
@@ -350,6 +392,24 @@ func _TabletServerService_Read_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TabletServerServiceServer).Read(ctx, req.(*ReadRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TabletServerService_VerifyTableRowRange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyTableRowRangeRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TabletServerServiceServer).VerifyTableRowRange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.tserver.TabletServerService/VerifyTableRowRange",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TabletServerServiceServer).VerifyTableRowRange(ctx, req.(*VerifyTableRowRangeRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -642,6 +702,42 @@ func _TabletServerService_TakeTransaction_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TabletServerService_GetSplitKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSplitKeyRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TabletServerServiceServer).GetSplitKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.tserver.TabletServerService/GetSplitKey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TabletServerServiceServer).GetSplitKey(ctx, req.(*GetSplitKeyRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TabletServerService_GetSharedData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSharedDataRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TabletServerServiceServer).GetSharedData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.tserver.TabletServerService/GetSharedData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TabletServerServiceServer).GetSharedData(ctx, req.(*GetSharedDataRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TabletServerService_ServiceDesc is the grpc.ServiceDesc for TabletServerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -656,6 +752,10 @@ var TabletServerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Read",
 			Handler:    _TabletServerService_Read_Handler,
+		},
+		{
+			MethodName: "VerifyTableRowRange",
+			Handler:    _TabletServerService_VerifyTableRowRange_Handler,
 		},
 		{
 			MethodName: "NoOp",
@@ -720,6 +820,14 @@ var TabletServerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TakeTransaction",
 			Handler:    _TabletServerService_TakeTransaction_Handler,
+		},
+		{
+			MethodName: "GetSplitKey",
+			Handler:    _TabletServerService_GetSplitKey_Handler,
+		},
+		{
+			MethodName: "GetSharedData",
+			Handler:    _TabletServerService_GetSharedData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
