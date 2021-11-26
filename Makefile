@@ -37,6 +37,7 @@ gen-proto:
 		--go_opt=Myb/tablet/tablet_metadata.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tablet/tablet.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/backup.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/tserver/pg_client.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/remote_bootstrap.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/tserver_admin.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/tserver_forward_service.proto=${GO_PACKAGE}/yb/api \
@@ -75,6 +76,7 @@ gen-proto:
 		--go-grpc_opt=Myb/tablet/tablet_metadata.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tablet/tablet.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/backup.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/tserver/pg_client.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/remote_bootstrap.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/tserver_admin.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/tserver_forward_service.proto=${GO_PACKAGE}/yb/api \
