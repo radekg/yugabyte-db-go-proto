@@ -108,6 +108,7 @@ type MasterServiceClient interface {
 	GetUniverseKeyRegistry(ctx context.Context, in *GetUniverseKeyRegistryRequestPB, opts ...grpc.CallOption) (*GetUniverseKeyRegistryResponsePB, error)
 	HasUniverseKeyInMemory(ctx context.Context, in *HasUniverseKeyInMemoryRequestPB, opts ...grpc.CallOption) (*HasUniverseKeyInMemoryResponsePB, error)
 	SplitTablet(ctx context.Context, in *MasterSplitTabletRequestPB, opts ...grpc.CallOption) (*MasterSplitTabletResponsePB, error)
+	CreateTransactionStatusTable(ctx context.Context, in *CreateTransactionStatusTableRequestPB, opts ...grpc.CallOption) (*CreateTransactionStatusTableResponsePB, error)
 	DeleteNotServingTablet(ctx context.Context, in *DeleteNotServingTabletRequestPB, opts ...grpc.CallOption) (*DeleteNotServingTabletResponsePB, error)
 	DdlLog(ctx context.Context, in *DdlLogRequestPB, opts ...grpc.CallOption) (*DdlLogResponsePB, error)
 }
@@ -831,6 +832,15 @@ func (c *masterServiceClient) SplitTablet(ctx context.Context, in *MasterSplitTa
 	return out, nil
 }
 
+func (c *masterServiceClient) CreateTransactionStatusTable(ctx context.Context, in *CreateTransactionStatusTableRequestPB, opts ...grpc.CallOption) (*CreateTransactionStatusTableResponsePB, error) {
+	out := new(CreateTransactionStatusTableResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterService/CreateTransactionStatusTable", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *masterServiceClient) DeleteNotServingTablet(ctx context.Context, in *DeleteNotServingTabletRequestPB, opts ...grpc.CallOption) (*DeleteNotServingTabletResponsePB, error) {
 	out := new(DeleteNotServingTabletResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.master.MasterService/DeleteNotServingTablet", in, out, opts...)
@@ -943,6 +953,7 @@ type MasterServiceServer interface {
 	GetUniverseKeyRegistry(context.Context, *GetUniverseKeyRegistryRequestPB) (*GetUniverseKeyRegistryResponsePB, error)
 	HasUniverseKeyInMemory(context.Context, *HasUniverseKeyInMemoryRequestPB) (*HasUniverseKeyInMemoryResponsePB, error)
 	SplitTablet(context.Context, *MasterSplitTabletRequestPB) (*MasterSplitTabletResponsePB, error)
+	CreateTransactionStatusTable(context.Context, *CreateTransactionStatusTableRequestPB) (*CreateTransactionStatusTableResponsePB, error)
 	DeleteNotServingTablet(context.Context, *DeleteNotServingTabletRequestPB) (*DeleteNotServingTabletResponsePB, error)
 	DdlLog(context.Context, *DdlLogRequestPB) (*DdlLogResponsePB, error)
 }
@@ -1187,6 +1198,9 @@ func (UnimplementedMasterServiceServer) HasUniverseKeyInMemory(context.Context, 
 }
 func (UnimplementedMasterServiceServer) SplitTablet(context.Context, *MasterSplitTabletRequestPB) (*MasterSplitTabletResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SplitTablet not implemented")
+}
+func (UnimplementedMasterServiceServer) CreateTransactionStatusTable(context.Context, *CreateTransactionStatusTableRequestPB) (*CreateTransactionStatusTableResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTransactionStatusTable not implemented")
 }
 func (UnimplementedMasterServiceServer) DeleteNotServingTablet(context.Context, *DeleteNotServingTabletRequestPB) (*DeleteNotServingTabletResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteNotServingTablet not implemented")
@@ -2628,6 +2642,24 @@ func _MasterService_SplitTablet_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MasterService_CreateTransactionStatusTable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTransactionStatusTableRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServiceServer).CreateTransactionStatusTable(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.master.MasterService/CreateTransactionStatusTable",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServiceServer).CreateTransactionStatusTable(ctx, req.(*CreateTransactionStatusTableRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MasterService_DeleteNotServingTablet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteNotServingTabletRequestPB)
 	if err := dec(in); err != nil {
@@ -2986,6 +3018,10 @@ var MasterService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SplitTablet",
 			Handler:    _MasterService_SplitTablet_Handler,
+		},
+		{
+			MethodName: "CreateTransactionStatusTable",
+			Handler:    _MasterService_CreateTransactionStatusTable_Handler,
 		},
 		{
 			MethodName: "DeleteNotServingTablet",
