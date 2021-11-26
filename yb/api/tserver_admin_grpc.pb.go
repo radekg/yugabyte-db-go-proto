@@ -39,6 +39,7 @@ type TabletServerAdminServiceClient interface {
 	AddTableToTablet(ctx context.Context, in *AddTableToTabletRequestPB, opts ...grpc.CallOption) (*AddTableToTabletResponsePB, error)
 	RemoveTableFromTablet(ctx context.Context, in *RemoveTableFromTabletRequestPB, opts ...grpc.CallOption) (*RemoveTableFromTabletResponsePB, error)
 	SplitTablet(ctx context.Context, in *SplitTabletRequestPB, opts ...grpc.CallOption) (*SplitTabletResponsePB, error)
+	UpgradeYsql(ctx context.Context, in *UpgradeYsqlRequestPB, opts ...grpc.CallOption) (*UpgradeYsqlResponsePB, error)
 }
 
 type tabletServerAdminServiceClient struct {
@@ -157,6 +158,15 @@ func (c *tabletServerAdminServiceClient) SplitTablet(ctx context.Context, in *Sp
 	return out, nil
 }
 
+func (c *tabletServerAdminServiceClient) UpgradeYsql(ctx context.Context, in *UpgradeYsqlRequestPB, opts ...grpc.CallOption) (*UpgradeYsqlResponsePB, error) {
+	out := new(UpgradeYsqlResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.tserver.TabletServerAdminService/UpgradeYsql", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TabletServerAdminServiceServer is the server API for TabletServerAdminService service.
 // All implementations should embed UnimplementedTabletServerAdminServiceServer
 // for forward compatibility
@@ -182,6 +192,7 @@ type TabletServerAdminServiceServer interface {
 	AddTableToTablet(context.Context, *AddTableToTabletRequestPB) (*AddTableToTabletResponsePB, error)
 	RemoveTableFromTablet(context.Context, *RemoveTableFromTabletRequestPB) (*RemoveTableFromTabletResponsePB, error)
 	SplitTablet(context.Context, *SplitTabletRequestPB) (*SplitTabletResponsePB, error)
+	UpgradeYsql(context.Context, *UpgradeYsqlRequestPB) (*UpgradeYsqlResponsePB, error)
 }
 
 // UnimplementedTabletServerAdminServiceServer should be embedded to have forward compatible implementations.
@@ -223,6 +234,9 @@ func (UnimplementedTabletServerAdminServiceServer) RemoveTableFromTablet(context
 }
 func (UnimplementedTabletServerAdminServiceServer) SplitTablet(context.Context, *SplitTabletRequestPB) (*SplitTabletResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SplitTablet not implemented")
+}
+func (UnimplementedTabletServerAdminServiceServer) UpgradeYsql(context.Context, *UpgradeYsqlRequestPB) (*UpgradeYsqlResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpgradeYsql not implemented")
 }
 
 // UnsafeTabletServerAdminServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -452,6 +466,24 @@ func _TabletServerAdminService_SplitTablet_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TabletServerAdminService_UpgradeYsql_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpgradeYsqlRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TabletServerAdminServiceServer).UpgradeYsql(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.tserver.TabletServerAdminService/UpgradeYsql",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TabletServerAdminServiceServer).UpgradeYsql(ctx, req.(*UpgradeYsqlRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TabletServerAdminService_ServiceDesc is the grpc.ServiceDesc for TabletServerAdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -506,6 +538,10 @@ var TabletServerAdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SplitTablet",
 			Handler:    _TabletServerAdminService_SplitTablet_Handler,
+		},
+		{
+			MethodName: "UpgradeYsql",
+			Handler:    _TabletServerAdminService_UpgradeYsql_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
