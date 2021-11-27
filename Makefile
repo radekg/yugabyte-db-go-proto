@@ -27,6 +27,7 @@ gen-proto:
 		--go_opt=Myb/consensus/log.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/docdb/docdb.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/fs/fs.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_backup.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/master/master.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/rocksdb/db/version_edit.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/rpc/rpc_header.proto=${GO_PACKAGE}/yb/api \
@@ -66,6 +67,7 @@ gen-proto:
 		--go-grpc_opt=Myb/consensus/log.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/docdb/docdb.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/fs/fs.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_backup.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/master/master.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/rocksdb/db/version_edit.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/rpc/rpc_header.proto=${GO_PACKAGE}/yb/api \
