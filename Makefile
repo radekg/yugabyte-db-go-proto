@@ -17,25 +17,45 @@ gen-proto:
 	protoc --proto_path=./proto \
 		--go_opt=Myb/cdc/cdc_consumer.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/cdc/cdc_service.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/common/common_net.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/common/common_types.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/common/common.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/common/pgsql_protocol.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/common/ql_protocol.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/common/redis_protocol.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/common/transaction.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/common/value.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/common/wire_protocol.proto=${GO_PACKAGE}/yb/api \
-		--go_opt=Myb/consensus/consensus.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/consensus/consensus_metadata.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/consensus/consensus_types.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/consensus/consensus.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/consensus/log.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/docdb/docdb.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/encryption/encryption.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/fs/fs.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/catalog_entity_info.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_admin.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/master/master_backup.proto=${GO_PACKAGE}/yb/api \
-		--go_opt=Myb/master/master.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_client.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_cluster.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_dcl.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_ddl.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_encryption.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_heartbeat.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_replication.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/master/master_types.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/rocksdb/db/version_edit.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/rpc/any.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/rpc/lightweight_message.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/rpc/rpc_header.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/rpc/rpc_introspection.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/rpc/rtest_diff_package.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/rpc/rtest.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/rpc/service.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/server/server_base.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/tablet/operations.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tablet/tablet_metadata.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/tablet/tablet_types.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tablet/tablet.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/backup.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/pg_client.proto=${GO_PACKAGE}/yb/api \
@@ -43,8 +63,8 @@ gen-proto:
 		--go_opt=Myb/tserver/tserver_admin.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/tserver_forward_service.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/tserver_service.proto=${GO_PACKAGE}/yb/api \
+		--go_opt=Myb/tserver/tserver_types.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/tserver/tserver.proto=${GO_PACKAGE}/yb/api \
-		--go_opt=Myb/util/encryption.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/util/histogram.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/util/jsonwriter_test.proto=${GO_PACKAGE}/yb/api \
 		--go_opt=Myb/util/opid.proto=${GO_PACKAGE}/yb/api \
@@ -57,25 +77,45 @@ gen-proto:
 		--go_opt=Myb/yql/redis/redisserver/redis_service.proto=${GO_PACKAGE}/yb/api/yql/redis/redisserver \
 		--go-grpc_opt=Myb/cdc/cdc_consumer.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/cdc/cdc_service.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/common/common_net.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/common/common_types.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/common/common.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/common/pgsql_protocol.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/common/ql_protocol.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/common/redis_protocol.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/common/transaction.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/common/value.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/common/wire_protocol.proto=${GO_PACKAGE}/yb/api \
-		--go-grpc_opt=Myb/consensus/consensus.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/consensus/consensus_metadata.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/consensus/consensus_types.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/consensus/consensus.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/consensus/log.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/docdb/docdb.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/encryption/encryption.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/fs/fs.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/catalog_entity_info.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_admin.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/master/master_backup.proto=${GO_PACKAGE}/yb/api \
-		--go-grpc_opt=Myb/master/master.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_client.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_cluster.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_dcl.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_ddl.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_encryption.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_heartbeat.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_replication.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/master/master_types.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/rocksdb/db/version_edit.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/rpc/any.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/rpc/lightweight_message.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/rpc/rpc_header.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/rpc/rpc_introspection.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/rpc/rtest_diff_package.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/rpc/rtest.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/rpc/service.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/server/server_base.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/tablet/operations.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tablet/tablet_metadata.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/tablet/tablet_types.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tablet/tablet.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/backup.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/pg_client.proto=${GO_PACKAGE}/yb/api \
@@ -83,8 +123,8 @@ gen-proto:
 		--go-grpc_opt=Myb/tserver/tserver_admin.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/tserver_forward_service.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/tserver_service.proto=${GO_PACKAGE}/yb/api \
+		--go-grpc_opt=Myb/tserver/tserver_types.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/tserver/tserver.proto=${GO_PACKAGE}/yb/api \
-		--go-grpc_opt=Myb/util/encryption.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/util/histogram.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/util/jsonwriter_test.proto=${GO_PACKAGE}/yb/api \
 		--go-grpc_opt=Myb/util/opid.proto=${GO_PACKAGE}/yb/api \
@@ -99,7 +139,22 @@ gen-proto:
 		--go-grpc_out=${GOPATH}/src/ \
 		--go-grpc_opt=require_unimplemented_servers=false \
 		$$(find proto/yb -iname "*.proto")
-	$(MAKE) fix-consensus-types fix-rtest-types fix-master-types fix-cdc-service-types
+	$(MAKE) fix-cdc-service-types fix-consensus-types fix-master-types  fix-rtest-types
+
+.PHONY: fix-cdc-service-types
+fix-cdc-service-types:
+	sed -i.bak -e 's!ListTabletsRequestPB!CDCListTabletsRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go.bak
+	sed -i.bak -e 's!ListTabletsResponsePB!CDCListTabletsResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go.bak
+	sed -i.bak -e 's!KeyValuePairPB!CDCKeyValuePairPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go.bak
+	sed -i.bak -e 's!ListTabletsRequestPB!CDCListTabletsRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go.bak
+	sed -i.bak -e 's!ListTabletsResponsePB!CDCListTabletsResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go.bak
+	sed -i.bak -e 's!KeyValuePairPB!CDCKeyValuePairPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go.bak
 
 .PHONY: fix-consensus-types
 fix-consensus-types:
@@ -121,61 +176,22 @@ fix-rtest-types:
 
 .PHONY: fix-master-types
 fix-master-types:
-	sed -i.bak -e 's!CreateCDCStreamRequestPB!MasterCreateCDCStreamRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!CreateCDCStreamResponsePB!MasterCreateCDCStreamResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!DeleteCDCStreamRequestPB!MasterDeleteCDCStreamRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!DeleteCDCStreamResponsePB!MasterDeleteCDCStreamResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!BackfillIndexRequestPB!MasterBackfillIndexRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!BackfillIndexResponsePB!MasterBackfillIndexResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!DeleteTabletRequestPB!MasterDeleteTabletRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!DeleteTabletResponsePB!MasterDeleteTabletResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!SplitTabletRequestPB!MasterSplitTabletRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!SplitTabletResponsePB!MasterSplitTabletResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master.pb.go.bak
-	sed -i.bak -e 's!CreateCDCStreamRequestPB!MasterCreateCDCStreamRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!CreateCDCStreamResponsePB!MasterCreateCDCStreamResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!DeleteCDCStreamRequestPB!MasterDeleteCDCStreamRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!DeleteCDCStreamResponsePB!MasterDeleteCDCStreamResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!BackfillIndexRequestPB!MasterBackfillIndexRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!BackfillIndexResponsePB!MasterBackfillIndexResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!DeleteTabletRequestPB!MasterDeleteTabletRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!DeleteTabletResponsePB!MasterDeleteTabletResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!SplitTabletRequestPB!MasterSplitTabletRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-	sed -i.bak -e 's!SplitTabletResponsePB!MasterSplitTabletResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_grpc.pb.go.bak
-
-.PHONY: fix-cdc-service-types
-fix-cdc-service-types:
-	sed -i.bak -e 's!ListTabletsRequestPB!CDCListTabletsRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go.bak
-	sed -i.bak -e 's!ListTabletsResponsePB!CDCListTabletsResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go.bak
-	sed -i.bak -e 's!KeyValuePairPB!CDCKeyValuePairPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service.pb.go.bak
-	sed -i.bak -e 's!ListTabletsRequestPB!CDCListTabletsRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go.bak
-	sed -i.bak -e 's!ListTabletsResponsePB!CDCListTabletsResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go.bak
-	sed -i.bak -e 's!KeyValuePairPB!CDCKeyValuePairPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go \
-		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/cdc_service_grpc.pb.go.bak
+	sed -i.bak -e 's!SplitTabletRequestPB!MasterSplitTabletRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_admin.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_admin.pb.go.bak
+	sed -i.bak -e 's!SplitTabletResponsePB!MasterSplitTabletResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_admin.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_admin.pb.go.bak
+	sed -i.bak -e 's!BackfillIndexRequestPB!MasterBackfillIndexRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_ddl.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_ddl.pb.go.bak
+	sed -i.bak -e 's!BackfillIndexResponsePB!MasterBackfillIndexResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_ddl.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_ddl.pb.go.bak
+	sed -i.bak -e 's!CreateCDCStreamRequestPB!MasterCreateCDCStreamRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
+	sed -i.bak -e 's!CreateCDCStreamResponsePB!MasterCreateCDCStreamResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
+	sed -i.bak -e 's!DeleteCDCStreamRequestPB!MasterDeleteCDCStreamRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
+	sed -i.bak -e 's!DeleteCDCStreamResponsePB!MasterDeleteCDCStreamResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
 
 .PHONY: prototools
 prototools:
