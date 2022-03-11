@@ -25,6 +25,7 @@ type MasterClientClient interface {
 	// Client->Master RPCs
 	GetTabletLocations(ctx context.Context, in *GetTabletLocationsRequestPB, opts ...grpc.CallOption) (*GetTabletLocationsResponsePB, error)
 	GetTableLocations(ctx context.Context, in *GetTableLocationsRequestPB, opts ...grpc.CallOption) (*GetTableLocationsResponsePB, error)
+	GetTransactionStatusTablets(ctx context.Context, in *GetTransactionStatusTabletsRequestPB, opts ...grpc.CallOption) (*GetTransactionStatusTabletsResponsePB, error)
 	// For Postgres:
 	ReservePgsqlOids(ctx context.Context, in *ReservePgsqlOidsRequestPB, opts ...grpc.CallOption) (*ReservePgsqlOidsResponsePB, error)
 	GetYsqlCatalogConfig(ctx context.Context, in *GetYsqlCatalogConfigRequestPB, opts ...grpc.CallOption) (*GetYsqlCatalogConfigResponsePB, error)
@@ -53,6 +54,15 @@ func (c *masterClientClient) GetTabletLocations(ctx context.Context, in *GetTabl
 func (c *masterClientClient) GetTableLocations(ctx context.Context, in *GetTableLocationsRequestPB, opts ...grpc.CallOption) (*GetTableLocationsResponsePB, error) {
 	out := new(GetTableLocationsResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.master.MasterClient/GetTableLocations", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masterClientClient) GetTransactionStatusTablets(ctx context.Context, in *GetTransactionStatusTabletsRequestPB, opts ...grpc.CallOption) (*GetTransactionStatusTabletsResponsePB, error) {
+	out := new(GetTransactionStatusTabletsResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterClient/GetTransactionStatusTablets", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,6 +112,7 @@ type MasterClientServer interface {
 	// Client->Master RPCs
 	GetTabletLocations(context.Context, *GetTabletLocationsRequestPB) (*GetTabletLocationsResponsePB, error)
 	GetTableLocations(context.Context, *GetTableLocationsRequestPB) (*GetTableLocationsResponsePB, error)
+	GetTransactionStatusTablets(context.Context, *GetTransactionStatusTabletsRequestPB) (*GetTransactionStatusTabletsResponsePB, error)
 	// For Postgres:
 	ReservePgsqlOids(context.Context, *ReservePgsqlOidsRequestPB) (*ReservePgsqlOidsResponsePB, error)
 	GetYsqlCatalogConfig(context.Context, *GetYsqlCatalogConfigRequestPB) (*GetYsqlCatalogConfigResponsePB, error)
@@ -119,6 +130,9 @@ func (UnimplementedMasterClientServer) GetTabletLocations(context.Context, *GetT
 }
 func (UnimplementedMasterClientServer) GetTableLocations(context.Context, *GetTableLocationsRequestPB) (*GetTableLocationsResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTableLocations not implemented")
+}
+func (UnimplementedMasterClientServer) GetTransactionStatusTablets(context.Context, *GetTransactionStatusTabletsRequestPB) (*GetTransactionStatusTabletsResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransactionStatusTablets not implemented")
 }
 func (UnimplementedMasterClientServer) ReservePgsqlOids(context.Context, *ReservePgsqlOidsRequestPB) (*ReservePgsqlOidsResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReservePgsqlOids not implemented")
@@ -176,6 +190,24 @@ func _MasterClient_GetTableLocations_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MasterClientServer).GetTableLocations(ctx, req.(*GetTableLocationsRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MasterClient_GetTransactionStatusTablets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionStatusTabletsRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterClientServer).GetTransactionStatusTablets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.master.MasterClient/GetTransactionStatusTablets",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterClientServer).GetTransactionStatusTablets(ctx, req.(*GetTransactionStatusTabletsRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,6 +298,10 @@ var MasterClient_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTableLocations",
 			Handler:    _MasterClient_GetTableLocations_Handler,
+		},
+		{
+			MethodName: "GetTransactionStatusTablets",
+			Handler:    _MasterClient_GetTransactionStatusTablets_Handler,
 		},
 		{
 			MethodName: "ReservePgsqlOids",

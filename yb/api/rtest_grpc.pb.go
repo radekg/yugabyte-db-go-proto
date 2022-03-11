@@ -32,6 +32,7 @@ type CalculatorServiceClient interface {
 	Disconnect(ctx context.Context, in *DisconnectRequestPB, opts ...grpc.CallOption) (*DisconnectResponsePB, error)
 	Forward(ctx context.Context, in *ForwardRequestPB, opts ...grpc.CallOption) (*ForwardResponsePB, error)
 	Lightweight(ctx context.Context, in *LightweightRequestPB, opts ...grpc.CallOption) (*LightweightResponsePB, error)
+	Trivial(ctx context.Context, in *TrivialRequestPB, opts ...grpc.CallOption) (*TrivialResponsePB, error)
 }
 
 type calculatorServiceClient struct {
@@ -132,6 +133,15 @@ func (c *calculatorServiceClient) Lightweight(ctx context.Context, in *Lightweig
 	return out, nil
 }
 
+func (c *calculatorServiceClient) Trivial(ctx context.Context, in *TrivialRequestPB, opts ...grpc.CallOption) (*TrivialResponsePB, error) {
+	out := new(TrivialResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.rpc_test.CalculatorService/Trivial", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CalculatorServiceServer is the server API for CalculatorService service.
 // All implementations should embed UnimplementedCalculatorServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type CalculatorServiceServer interface {
 	Disconnect(context.Context, *DisconnectRequestPB) (*DisconnectResponsePB, error)
 	Forward(context.Context, *ForwardRequestPB) (*ForwardResponsePB, error)
 	Lightweight(context.Context, *LightweightRequestPB) (*LightweightResponsePB, error)
+	Trivial(context.Context, *TrivialRequestPB) (*TrivialResponsePB, error)
 }
 
 // UnimplementedCalculatorServiceServer should be embedded to have forward compatible implementations.
@@ -181,6 +192,9 @@ func (UnimplementedCalculatorServiceServer) Forward(context.Context, *ForwardReq
 }
 func (UnimplementedCalculatorServiceServer) Lightweight(context.Context, *LightweightRequestPB) (*LightweightResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Lightweight not implemented")
+}
+func (UnimplementedCalculatorServiceServer) Trivial(context.Context, *TrivialRequestPB) (*TrivialResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Trivial not implemented")
 }
 
 // UnsafeCalculatorServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -374,6 +388,24 @@ func _CalculatorService_Lightweight_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CalculatorService_Trivial_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TrivialRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculatorServiceServer).Trivial(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.rpc_test.CalculatorService/Trivial",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculatorServiceServer).Trivial(ctx, req.(*TrivialRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CalculatorService_ServiceDesc is the grpc.ServiceDesc for CalculatorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -420,6 +452,10 @@ var CalculatorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Lightweight",
 			Handler:    _CalculatorService_Lightweight_Handler,
+		},
+		{
+			MethodName: "Trivial",
+			Handler:    _CalculatorService_Trivial_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

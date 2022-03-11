@@ -30,6 +30,8 @@ type CDCServiceClient interface {
 	UpdateCdcReplicatedIndex(ctx context.Context, in *UpdateCdcReplicatedIndexRequestPB, opts ...grpc.CallOption) (*UpdateCdcReplicatedIndexResponsePB, error)
 	BootstrapProducer(ctx context.Context, in *BootstrapProducerRequestPB, opts ...grpc.CallOption) (*BootstrapProducerResponsePB, error)
 	GetLatestEntryOpId(ctx context.Context, in *GetLatestEntryOpIdRequestPB, opts ...grpc.CallOption) (*GetLatestEntryOpIdResponsePB, error)
+	GetCDCDBStreamInfo(ctx context.Context, in *GetCDCDBStreamInfoRequestPB, opts ...grpc.CallOption) (*GetCDCDBStreamInfoResponsePB, error)
+	SetCDCCheckpoint(ctx context.Context, in *SetCDCCheckpointRequestPB, opts ...grpc.CallOption) (*SetCDCCheckpointResponsePB, error)
 }
 
 type cDCServiceClient struct {
@@ -112,6 +114,24 @@ func (c *cDCServiceClient) GetLatestEntryOpId(ctx context.Context, in *GetLatest
 	return out, nil
 }
 
+func (c *cDCServiceClient) GetCDCDBStreamInfo(ctx context.Context, in *GetCDCDBStreamInfoRequestPB, opts ...grpc.CallOption) (*GetCDCDBStreamInfoResponsePB, error) {
+	out := new(GetCDCDBStreamInfoResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.cdc.CDCService/GetCDCDBStreamInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cDCServiceClient) SetCDCCheckpoint(ctx context.Context, in *SetCDCCheckpointRequestPB, opts ...grpc.CallOption) (*SetCDCCheckpointResponsePB, error) {
+	out := new(SetCDCCheckpointResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.cdc.CDCService/SetCDCCheckpoint", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CDCServiceServer is the server API for CDCService service.
 // All implementations should embed UnimplementedCDCServiceServer
 // for forward compatibility
@@ -124,6 +144,8 @@ type CDCServiceServer interface {
 	UpdateCdcReplicatedIndex(context.Context, *UpdateCdcReplicatedIndexRequestPB) (*UpdateCdcReplicatedIndexResponsePB, error)
 	BootstrapProducer(context.Context, *BootstrapProducerRequestPB) (*BootstrapProducerResponsePB, error)
 	GetLatestEntryOpId(context.Context, *GetLatestEntryOpIdRequestPB) (*GetLatestEntryOpIdResponsePB, error)
+	GetCDCDBStreamInfo(context.Context, *GetCDCDBStreamInfoRequestPB) (*GetCDCDBStreamInfoResponsePB, error)
+	SetCDCCheckpoint(context.Context, *SetCDCCheckpointRequestPB) (*SetCDCCheckpointResponsePB, error)
 }
 
 // UnimplementedCDCServiceServer should be embedded to have forward compatible implementations.
@@ -153,6 +175,12 @@ func (UnimplementedCDCServiceServer) BootstrapProducer(context.Context, *Bootstr
 }
 func (UnimplementedCDCServiceServer) GetLatestEntryOpId(context.Context, *GetLatestEntryOpIdRequestPB) (*GetLatestEntryOpIdResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLatestEntryOpId not implemented")
+}
+func (UnimplementedCDCServiceServer) GetCDCDBStreamInfo(context.Context, *GetCDCDBStreamInfoRequestPB) (*GetCDCDBStreamInfoResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCDCDBStreamInfo not implemented")
+}
+func (UnimplementedCDCServiceServer) SetCDCCheckpoint(context.Context, *SetCDCCheckpointRequestPB) (*SetCDCCheckpointResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetCDCCheckpoint not implemented")
 }
 
 // UnsafeCDCServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -310,6 +338,42 @@ func _CDCService_GetLatestEntryOpId_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CDCService_GetCDCDBStreamInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCDCDBStreamInfoRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CDCServiceServer).GetCDCDBStreamInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.cdc.CDCService/GetCDCDBStreamInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CDCServiceServer).GetCDCDBStreamInfo(ctx, req.(*GetCDCDBStreamInfoRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CDCService_SetCDCCheckpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetCDCCheckpointRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CDCServiceServer).SetCDCCheckpoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.cdc.CDCService/SetCDCCheckpoint",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CDCServiceServer).SetCDCCheckpoint(ctx, req.(*SetCDCCheckpointRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CDCService_ServiceDesc is the grpc.ServiceDesc for CDCService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -348,6 +412,14 @@ var CDCService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLatestEntryOpId",
 			Handler:    _CDCService_GetLatestEntryOpId_Handler,
+		},
+		{
+			MethodName: "GetCDCDBStreamInfo",
+			Handler:    _CDCService_GetCDCDBStreamInfo_Handler,
+		},
+		{
+			MethodName: "SetCDCCheckpoint",
+			Handler:    _CDCService_SetCDCCheckpoint_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
