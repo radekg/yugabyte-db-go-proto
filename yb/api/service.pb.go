@@ -42,12 +42,26 @@ var file_yb_rpc_service_proto_extTypes = []protoimpl.ExtensionInfo{
 		Tag:           "bytes,50011,opt,name=custom_service_name",
 		Filename:      "yb/rpc/service.proto",
 	},
+	{
+		ExtendedType:  (*descriptorpb.MethodOptions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         50001,
+		Name:          "yb.rpc.trivial",
+		Tag:           "varint,50001,opt,name=trivial",
+		Filename:      "yb/rpc/service.proto",
+	},
 }
 
 // Extension fields to descriptorpb.ServiceOptions.
 var (
 	// optional string custom_service_name = 50011;
 	E_CustomServiceName = &file_yb_rpc_service_proto_extTypes[0]
+)
+
+// Extension fields to descriptorpb.MethodOptions.
+var (
+	// optional bool trivial = 50001;
+	E_Trivial = &file_yb_rpc_service_proto_extTypes[1]
 )
 
 var File_yb_rpc_service_proto protoreflect.FileDescriptor
@@ -62,18 +76,24 @@ var file_yb_rpc_service_proto_rawDesc = []byte{
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
 	0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0xdb, 0x86, 0x03, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x11, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x4e,
-	0x61, 0x6d, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x6d, 0x65, 0x3a, 0x3a, 0x0a, 0x07, 0x74, 0x72, 0x69, 0x76, 0x69, 0x61, 0x6c, 0x12, 0x1e,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0xd1,
+	0x86, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x74, 0x72, 0x69, 0x76, 0x69, 0x61, 0x6c, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_yb_rpc_service_proto_goTypes = []interface{}{
 	(*descriptorpb.ServiceOptions)(nil), // 0: google.protobuf.ServiceOptions
+	(*descriptorpb.MethodOptions)(nil),  // 1: google.protobuf.MethodOptions
 }
 var file_yb_rpc_service_proto_depIdxs = []int32{
 	0, // 0: yb.rpc.custom_service_name:extendee -> google.protobuf.ServiceOptions
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	0, // [0:1] is the sub-list for extension extendee
+	1, // 1: yb.rpc.trivial:extendee -> google.protobuf.MethodOptions
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	0, // [0:2] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
 }
 
@@ -89,7 +109,7 @@ func file_yb_rpc_service_proto_init() {
 			RawDescriptor: file_yb_rpc_service_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   0,
-			NumExtensions: 1,
+			NumExtensions: 2,
 			NumServices:   0,
 		},
 		GoTypes:           file_yb_rpc_service_proto_goTypes,

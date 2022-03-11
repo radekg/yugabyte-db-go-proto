@@ -10,7 +10,7 @@ Clone YugabyteDB sources somewhere:
 mkdir -p /tmp/ybdb
 cd /tmp/ybdb
 git clone https://github.com/yugabyte/yugabyte-db.git .
-git checkout v2.11.0
+git checkout v2.13.0
 ```
 
 Clone this repository:

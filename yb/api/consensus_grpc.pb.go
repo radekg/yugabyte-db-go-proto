@@ -34,6 +34,8 @@ type ConsensusServiceClient interface {
 	// an operation to change the role of a server between VOTER and PRE_VOTER.
 	// An OK response means the operation was successful.
 	ChangeConfig(ctx context.Context, in *ChangeConfigRequestPB, opts ...grpc.CallOption) (*ChangeConfigResponsePB, error)
+	// Implements unsafe config change operation for manual recovery use cases.
+	UnsafeChangeConfig(ctx context.Context, in *UnsafeChangeConfigRequestPB, opts ...grpc.CallOption) (*UnsafeChangeConfigResponsePB, error)
 	GetNodeInstance(ctx context.Context, in *GetNodeInstanceRequestPB, opts ...grpc.CallOption) (*GetNodeInstanceResponsePB, error)
 	// Force this node to run a leader election.
 	RunLeaderElection(ctx context.Context, in *RunLeaderElectionRequestPB, opts ...grpc.CallOption) (*RunLeaderElectionResponsePB, error)
@@ -87,6 +89,15 @@ func (c *consensusServiceClient) RequestConsensusVote(ctx context.Context, in *V
 func (c *consensusServiceClient) ChangeConfig(ctx context.Context, in *ChangeConfigRequestPB, opts ...grpc.CallOption) (*ChangeConfigResponsePB, error) {
 	out := new(ChangeConfigResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.consensus.ConsensusService/ChangeConfig", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *consensusServiceClient) UnsafeChangeConfig(ctx context.Context, in *UnsafeChangeConfigRequestPB, opts ...grpc.CallOption) (*UnsafeChangeConfigResponsePB, error) {
+	out := new(UnsafeChangeConfigResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.consensus.ConsensusService/UnsafeChangeConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -172,6 +183,8 @@ type ConsensusServiceServer interface {
 	// an operation to change the role of a server between VOTER and PRE_VOTER.
 	// An OK response means the operation was successful.
 	ChangeConfig(context.Context, *ChangeConfigRequestPB) (*ChangeConfigResponsePB, error)
+	// Implements unsafe config change operation for manual recovery use cases.
+	UnsafeChangeConfig(context.Context, *UnsafeChangeConfigRequestPB) (*UnsafeChangeConfigResponsePB, error)
 	GetNodeInstance(context.Context, *GetNodeInstanceRequestPB) (*GetNodeInstanceResponsePB, error)
 	// Force this node to run a leader election.
 	RunLeaderElection(context.Context, *RunLeaderElectionRequestPB) (*RunLeaderElectionResponsePB, error)
@@ -202,6 +215,9 @@ func (UnimplementedConsensusServiceServer) RequestConsensusVote(context.Context,
 }
 func (UnimplementedConsensusServiceServer) ChangeConfig(context.Context, *ChangeConfigRequestPB) (*ChangeConfigResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeConfig not implemented")
+}
+func (UnimplementedConsensusServiceServer) UnsafeChangeConfig(context.Context, *UnsafeChangeConfigRequestPB) (*UnsafeChangeConfigResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnsafeChangeConfig not implemented")
 }
 func (UnimplementedConsensusServiceServer) GetNodeInstance(context.Context, *GetNodeInstanceRequestPB) (*GetNodeInstanceResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNodeInstance not implemented")
@@ -304,6 +320,24 @@ func _ConsensusService_ChangeConfig_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConsensusServiceServer).ChangeConfig(ctx, req.(*ChangeConfigRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConsensusService_UnsafeChangeConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnsafeChangeConfigRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConsensusServiceServer).UnsafeChangeConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.consensus.ConsensusService/UnsafeChangeConfig",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConsensusServiceServer).UnsafeChangeConfig(ctx, req.(*UnsafeChangeConfigRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -456,6 +490,10 @@ var ConsensusService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangeConfig",
 			Handler:    _ConsensusService_ChangeConfig_Handler,
+		},
+		{
+			MethodName: "UnsafeChangeConfig",
+			Handler:    _ConsensusService_UnsafeChangeConfig_Handler,
 		},
 		{
 			MethodName: "GetNodeInstance",

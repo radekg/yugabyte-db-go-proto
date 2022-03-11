@@ -28,6 +28,7 @@ type MasterReplicationClient interface {
 	DeleteCDCStream(ctx context.Context, in *DeleteCDCStreamRequestPB, opts ...grpc.CallOption) (*DeleteCDCStreamResponsePB, error)
 	ListCDCStreams(ctx context.Context, in *ListCDCStreamsRequestPB, opts ...grpc.CallOption) (*ListCDCStreamsResponsePB, error)
 	GetCDCStream(ctx context.Context, in *GetCDCStreamRequestPB, opts ...grpc.CallOption) (*GetCDCStreamResponsePB, error)
+	GetCDCDBStreamInfo(ctx context.Context, in *GetCDCDBStreamInfoRequestPB, opts ...grpc.CallOption) (*GetCDCDBStreamInfoResponsePB, error)
 	UpdateCDCStream(ctx context.Context, in *UpdateCDCStreamRequestPB, opts ...grpc.CallOption) (*UpdateCDCStreamResponsePB, error)
 	SetupUniverseReplication(ctx context.Context, in *SetupUniverseReplicationRequestPB, opts ...grpc.CallOption) (*SetupUniverseReplicationResponsePB, error)
 	DeleteUniverseReplication(ctx context.Context, in *DeleteUniverseReplicationRequestPB, opts ...grpc.CallOption) (*DeleteUniverseReplicationResponsePB, error)
@@ -35,6 +36,7 @@ type MasterReplicationClient interface {
 	SetUniverseReplicationEnabled(ctx context.Context, in *SetUniverseReplicationEnabledRequestPB, opts ...grpc.CallOption) (*SetUniverseReplicationEnabledResponsePB, error)
 	GetUniverseReplication(ctx context.Context, in *GetUniverseReplicationRequestPB, opts ...grpc.CallOption) (*GetUniverseReplicationResponsePB, error)
 	IsSetupUniverseReplicationDone(ctx context.Context, in *IsSetupUniverseReplicationDoneRequestPB, opts ...grpc.CallOption) (*IsSetupUniverseReplicationDoneResponsePB, error)
+	UpdateConsumerOnProducerSplit(ctx context.Context, in *UpdateConsumerOnProducerSplitRequestPB, opts ...grpc.CallOption) (*UpdateConsumerOnProducerSplitResponsePB, error)
 }
 
 type masterReplicationClient struct {
@@ -84,6 +86,15 @@ func (c *masterReplicationClient) ListCDCStreams(ctx context.Context, in *ListCD
 func (c *masterReplicationClient) GetCDCStream(ctx context.Context, in *GetCDCStreamRequestPB, opts ...grpc.CallOption) (*GetCDCStreamResponsePB, error) {
 	out := new(GetCDCStreamResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.master.MasterReplication/GetCDCStream", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masterReplicationClient) GetCDCDBStreamInfo(ctx context.Context, in *GetCDCDBStreamInfoRequestPB, opts ...grpc.CallOption) (*GetCDCDBStreamInfoResponsePB, error) {
+	out := new(GetCDCDBStreamInfoResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterReplication/GetCDCDBStreamInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -153,6 +164,15 @@ func (c *masterReplicationClient) IsSetupUniverseReplicationDone(ctx context.Con
 	return out, nil
 }
 
+func (c *masterReplicationClient) UpdateConsumerOnProducerSplit(ctx context.Context, in *UpdateConsumerOnProducerSplitRequestPB, opts ...grpc.CallOption) (*UpdateConsumerOnProducerSplitResponsePB, error) {
+	out := new(UpdateConsumerOnProducerSplitResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterReplication/UpdateConsumerOnProducerSplit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MasterReplicationServer is the server API for MasterReplication service.
 // All implementations should embed UnimplementedMasterReplicationServer
 // for forward compatibility
@@ -163,6 +183,7 @@ type MasterReplicationServer interface {
 	DeleteCDCStream(context.Context, *DeleteCDCStreamRequestPB) (*DeleteCDCStreamResponsePB, error)
 	ListCDCStreams(context.Context, *ListCDCStreamsRequestPB) (*ListCDCStreamsResponsePB, error)
 	GetCDCStream(context.Context, *GetCDCStreamRequestPB) (*GetCDCStreamResponsePB, error)
+	GetCDCDBStreamInfo(context.Context, *GetCDCDBStreamInfoRequestPB) (*GetCDCDBStreamInfoResponsePB, error)
 	UpdateCDCStream(context.Context, *UpdateCDCStreamRequestPB) (*UpdateCDCStreamResponsePB, error)
 	SetupUniverseReplication(context.Context, *SetupUniverseReplicationRequestPB) (*SetupUniverseReplicationResponsePB, error)
 	DeleteUniverseReplication(context.Context, *DeleteUniverseReplicationRequestPB) (*DeleteUniverseReplicationResponsePB, error)
@@ -170,6 +191,7 @@ type MasterReplicationServer interface {
 	SetUniverseReplicationEnabled(context.Context, *SetUniverseReplicationEnabledRequestPB) (*SetUniverseReplicationEnabledResponsePB, error)
 	GetUniverseReplication(context.Context, *GetUniverseReplicationRequestPB) (*GetUniverseReplicationResponsePB, error)
 	IsSetupUniverseReplicationDone(context.Context, *IsSetupUniverseReplicationDoneRequestPB) (*IsSetupUniverseReplicationDoneResponsePB, error)
+	UpdateConsumerOnProducerSplit(context.Context, *UpdateConsumerOnProducerSplitRequestPB) (*UpdateConsumerOnProducerSplitResponsePB, error)
 }
 
 // UnimplementedMasterReplicationServer should be embedded to have forward compatible implementations.
@@ -191,6 +213,9 @@ func (UnimplementedMasterReplicationServer) ListCDCStreams(context.Context, *Lis
 func (UnimplementedMasterReplicationServer) GetCDCStream(context.Context, *GetCDCStreamRequestPB) (*GetCDCStreamResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCDCStream not implemented")
 }
+func (UnimplementedMasterReplicationServer) GetCDCDBStreamInfo(context.Context, *GetCDCDBStreamInfoRequestPB) (*GetCDCDBStreamInfoResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCDCDBStreamInfo not implemented")
+}
 func (UnimplementedMasterReplicationServer) UpdateCDCStream(context.Context, *UpdateCDCStreamRequestPB) (*UpdateCDCStreamResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCDCStream not implemented")
 }
@@ -211,6 +236,9 @@ func (UnimplementedMasterReplicationServer) GetUniverseReplication(context.Conte
 }
 func (UnimplementedMasterReplicationServer) IsSetupUniverseReplicationDone(context.Context, *IsSetupUniverseReplicationDoneRequestPB) (*IsSetupUniverseReplicationDoneResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsSetupUniverseReplicationDone not implemented")
+}
+func (UnimplementedMasterReplicationServer) UpdateConsumerOnProducerSplit(context.Context, *UpdateConsumerOnProducerSplitRequestPB) (*UpdateConsumerOnProducerSplitResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateConsumerOnProducerSplit not implemented")
 }
 
 // UnsafeMasterReplicationServer may be embedded to opt out of forward compatibility for this service.
@@ -310,6 +338,24 @@ func _MasterReplication_GetCDCStream_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MasterReplicationServer).GetCDCStream(ctx, req.(*GetCDCStreamRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MasterReplication_GetCDCDBStreamInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCDCDBStreamInfoRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterReplicationServer).GetCDCDBStreamInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.master.MasterReplication/GetCDCDBStreamInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterReplicationServer).GetCDCDBStreamInfo(ctx, req.(*GetCDCDBStreamInfoRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -440,6 +486,24 @@ func _MasterReplication_IsSetupUniverseReplicationDone_Handler(srv interface{}, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MasterReplication_UpdateConsumerOnProducerSplit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateConsumerOnProducerSplitRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterReplicationServer).UpdateConsumerOnProducerSplit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.master.MasterReplication/UpdateConsumerOnProducerSplit",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterReplicationServer).UpdateConsumerOnProducerSplit(ctx, req.(*UpdateConsumerOnProducerSplitRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MasterReplication_ServiceDesc is the grpc.ServiceDesc for MasterReplication service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -468,6 +532,10 @@ var MasterReplication_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MasterReplication_GetCDCStream_Handler,
 		},
 		{
+			MethodName: "GetCDCDBStreamInfo",
+			Handler:    _MasterReplication_GetCDCDBStreamInfo_Handler,
+		},
+		{
 			MethodName: "UpdateCDCStream",
 			Handler:    _MasterReplication_UpdateCDCStream_Handler,
 		},
@@ -494,6 +562,10 @@ var MasterReplication_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsSetupUniverseReplicationDone",
 			Handler:    _MasterReplication_IsSetupUniverseReplicationDone_Handler,
+		},
+		{
+			MethodName: "UpdateConsumerOnProducerSplit",
+			Handler:    _MasterReplication_UpdateConsumerOnProducerSplit_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

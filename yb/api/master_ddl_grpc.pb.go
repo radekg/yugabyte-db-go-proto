@@ -26,6 +26,7 @@ type MasterDdlClient interface {
 	IsCreateTableDone(ctx context.Context, in *IsCreateTableDoneRequestPB, opts ...grpc.CallOption) (*IsCreateTableDoneResponsePB, error)
 	ListTables(ctx context.Context, in *ListTablesRequestPB, opts ...grpc.CallOption) (*ListTablesResponsePB, error)
 	GetTableSchema(ctx context.Context, in *GetTableSchemaRequestPB, opts ...grpc.CallOption) (*GetTableSchemaResponsePB, error)
+	GetTablegroupSchema(ctx context.Context, in *GetTablegroupSchemaRequestPB, opts ...grpc.CallOption) (*GetTablegroupSchemaResponsePB, error)
 	GetColocatedTabletSchema(ctx context.Context, in *GetColocatedTabletSchemaRequestPB, opts ...grpc.CallOption) (*GetColocatedTabletSchemaResponsePB, error)
 	TruncateTable(ctx context.Context, in *TruncateTableRequestPB, opts ...grpc.CallOption) (*TruncateTableResponsePB, error)
 	IsTruncateTableDone(ctx context.Context, in *IsTruncateTableDoneRequestPB, opts ...grpc.CallOption) (*IsTruncateTableDoneResponsePB, error)
@@ -91,6 +92,15 @@ func (c *masterDdlClient) ListTables(ctx context.Context, in *ListTablesRequestP
 func (c *masterDdlClient) GetTableSchema(ctx context.Context, in *GetTableSchemaRequestPB, opts ...grpc.CallOption) (*GetTableSchemaResponsePB, error) {
 	out := new(GetTableSchemaResponsePB)
 	err := c.cc.Invoke(ctx, "/yb.master.MasterDdl/GetTableSchema", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masterDdlClient) GetTablegroupSchema(ctx context.Context, in *GetTablegroupSchemaRequestPB, opts ...grpc.CallOption) (*GetTablegroupSchemaResponsePB, error) {
+	out := new(GetTablegroupSchemaResponsePB)
+	err := c.cc.Invoke(ctx, "/yb.master.MasterDdl/GetTablegroupSchema", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -321,6 +331,7 @@ type MasterDdlServer interface {
 	IsCreateTableDone(context.Context, *IsCreateTableDoneRequestPB) (*IsCreateTableDoneResponsePB, error)
 	ListTables(context.Context, *ListTablesRequestPB) (*ListTablesResponsePB, error)
 	GetTableSchema(context.Context, *GetTableSchemaRequestPB) (*GetTableSchemaResponsePB, error)
+	GetTablegroupSchema(context.Context, *GetTablegroupSchemaRequestPB) (*GetTablegroupSchemaResponsePB, error)
 	GetColocatedTabletSchema(context.Context, *GetColocatedTabletSchemaRequestPB) (*GetColocatedTabletSchemaResponsePB, error)
 	TruncateTable(context.Context, *TruncateTableRequestPB) (*TruncateTableResponsePB, error)
 	IsTruncateTableDone(context.Context, *IsTruncateTableDoneRequestPB) (*IsTruncateTableDoneResponsePB, error)
@@ -363,6 +374,9 @@ func (UnimplementedMasterDdlServer) ListTables(context.Context, *ListTablesReque
 }
 func (UnimplementedMasterDdlServer) GetTableSchema(context.Context, *GetTableSchemaRequestPB) (*GetTableSchemaResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTableSchema not implemented")
+}
+func (UnimplementedMasterDdlServer) GetTablegroupSchema(context.Context, *GetTablegroupSchemaRequestPB) (*GetTablegroupSchemaResponsePB, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTablegroupSchema not implemented")
 }
 func (UnimplementedMasterDdlServer) GetColocatedTabletSchema(context.Context, *GetColocatedTabletSchemaRequestPB) (*GetColocatedTabletSchemaResponsePB, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetColocatedTabletSchema not implemented")
@@ -516,6 +530,24 @@ func _MasterDdl_GetTableSchema_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MasterDdlServer).GetTableSchema(ctx, req.(*GetTableSchemaRequestPB))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MasterDdl_GetTablegroupSchema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTablegroupSchemaRequestPB)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterDdlServer).GetTablegroupSchema(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/yb.master.MasterDdl/GetTablegroupSchema",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterDdlServer).GetTablegroupSchema(ctx, req.(*GetTablegroupSchemaRequestPB))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -974,6 +1006,10 @@ var MasterDdl_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTableSchema",
 			Handler:    _MasterDdl_GetTableSchema_Handler,
+		},
+		{
+			MethodName: "GetTablegroupSchema",
+			Handler:    _MasterDdl_GetTablegroupSchema_Handler,
 		},
 		{
 			MethodName: "GetColocatedTabletSchema",

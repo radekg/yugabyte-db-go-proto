@@ -192,6 +192,10 @@ fix-master-types:
 		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
 	sed -i.bak -e 's!DeleteCDCStreamResponsePB!MasterDeleteCDCStreamResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go \
 		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
+	sed -i.bak -e 's!GetCDCDBStreamInfoRequestPB!MasterGetCDCDBStreamInfoRequestPB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
+	sed -i.bak -e 's!GetCDCDBStreamInfoResponsePB!MasterGetCDCDBStreamInfoResponsePB!g' ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go \
+		&& rm -- ${GOPATH}/src/${GO_PACKAGE}/yb/api/master_replication.pb.go.bak
 
 .PHONY: prototools
 prototools:
